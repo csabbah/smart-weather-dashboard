@@ -1,14 +1,27 @@
+var APIKEY = '67ad538a4c7356a83bfb4f14c6e9b666';
 var filters = {
-  apiKey: '67ad538a4c7356a83bfb4f14c6e9b666',
-  location: { lat: '43.6532', long: '-79.3832' },
+  location: { lat: '41.8755616', long: '-87.6244212' },
 };
 
-var fetchWeather = async () => {
-  var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${filters.location.lat}&lon=${filters.location.long}&exclude=hourly,minutely&appid=${filters.apiKey}&units=imperial`;
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+// Return Lon and Lat of a given city
+var extractGeoData = async () => {
+  var url = `http://api.openweathermap.org/geo/1.0/direct?q=new york&limit=5&appid=${APIKEY}`;
+  var res = await fetch(url);
+  var location = await res.json();
+
+  var lon = location[0].lon;
+  var lat = location[0].lat;
+  fetchWeather(lat, lon);
+};
+
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+var fetchWeather = async (lat, lon) => {
+  var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKEY}&units=imperial`;
   var res = await fetch(url);
   var weatherData = await res.json();
-
-  console.log(weatherData);
   extractData(weatherData);
 };
 
@@ -18,8 +31,10 @@ var extractData = (data) => {
   var timezone = data.timezone;
 
   console.log(
-    `Feels like: ${feelsLike} \nCurrent Weather: ${currentWeather}\nTimezone: ${timezone}`
+    `Feels like: ${feelsLike}°F \nCurrent Weather: ${currentWeather}°F\nTimezone: ${timezone}`
   );
 };
 
-fetchWeather();
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+extractGeoData();
