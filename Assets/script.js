@@ -1,5 +1,3 @@
-// CATCH ALL THE ERRORS I.E. FAILED TO FETCH DATA, NETWORK ISSUES AND ETC...
-// ADD A CONDITION TO REJECT EMPTY INPUT VALUES
 // FOR EACH CITY THAT IS SEARCHED, ADD IT TO A SEARCH HISTORY OBJECT (LOCAL STORAGE)
 // IMPORTANT - DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
 // IMPORTANT -  UV returns different value than on the openweathermap api?
@@ -9,24 +7,37 @@ var APIKEY = '67ad538a4c7356a83bfb4f14c6e9b666';
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-// Extracts the Longitude and Latitude of a city that the client searches up
+// Extracts the Longitude and Latitude of a city that the client searches up THEN execute the MAIN fetch function
+// IMPORTANT - Since we execute this API fetch function first, we only need to catch the errors here alone
 var extractGeoData = async (searchedCity) => {
-  // Update the URL with the searched city and include the API key
-  var url = `http://api.openweathermap.org/geo/1.0/direct?q=${searchedCity}&limit=5&appid=${APIKEY}`;
-  var res = await fetch(url);
-  var location = await res.json();
-
-  // After Lat and Lon have been extracted, fetch for the MAIN data using those coordinates
-  // location[0].name holds the city name which will will be passed down across multiple functions
-  fetchWeather(location[0].lat, location[0].lon, location[0].name);
+  // Execute a try and catch block to catch if there is no network
+  try {
+    // Update the URL with the searched city and include the API key
+    var url = `http://api.openweathermap.org/geo/1.0/direct?q=${searchedCity}&limit=5&appid=${APIKEY}`;
+    var res = await fetch(url);
+    var location = await res.json();
+    // If data doesn't exist, that means that searched up city either doesn't exist or user made a typo
+    if (location.length == 0 || location == null || location == undefined) {
+      alert('Please type a valid city');
+    } else {
+      // After Lat and Lon have been extracted, fetch for the MAIN data using those coordinates
+      // location[0].name holds the city name which will will be passed down across multiple functions
+      fetchWeather(location[0].lat, location[0].lon, location[0].name);
+    }
+    // If there is not network connection, execute the catch block function
+  } catch (error) {
+    alert('Failed to connect to API due to network issues');
+  }
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // Using Lat and Lon values from extractGeoData(), extract the MAIN weather data
+// IMPORTANT - Since we caught the no network and no valid data issues above, we DO NOT need to catch them here
 var fetchWeather = async (lat, lon, location) => {
   var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKEY}&units=imperial`;
   var res = await fetch(url);
+
   var weatherData = await res.json();
   extractedData(weatherData, location);
 };
@@ -174,7 +185,11 @@ var formEl = document.getElementById('main-form');
 // Upon form submission....
 formEl.addEventListener('submit', (e) => {
   e.preventDefault; // Prevent browser refresh
-  extractGeoData(inputEl.value); // Use the value from the input field to execute the main function
+  if (inputEl.value) {
+    extractGeoData(inputEl.value); // Use the value from the input field to execute the main function
+  } else {
+    alert('Please enter a city');
+  }
   // The above value would be the city name that the user picks
   inputEl.value = ''; // Reset value for the input field
 });
