@@ -24,7 +24,7 @@ var extractGeoData = async (searchedCity) => {
       // location[0].name holds the city name which will will be passed down across multiple functions
       fetchWeather(location[0].lat, location[0].lon, location[0].name);
     }
-    // If there is not network connection, execute the catch block function
+    // If there is no network connection, execute the catch block function
   } catch (error) {
     alert('Failed to connect to API due to network issues');
   }
@@ -72,6 +72,7 @@ var extractedData = (weatherData, location) => {
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+var resetBtn = document.getElementById('reset');
 
 // Update DOM elements (textcontent) for the CURRENT DAY weather data
 var updateEl = (
@@ -83,7 +84,7 @@ var updateEl = (
   uvIndex,
   iconUrl
 ) => {
-  // Declare variables to hold all the required HTML elements
+  // Declare variables to hold all the required HTML
   var citynameEl = document.getElementById('city-name');
   var currentWeatherEl = document.getElementById('current-weather');
   var feelslikeEl = document.getElementById('feels-like');
@@ -91,6 +92,14 @@ var updateEl = (
   var windspeedEl = document.getElementById('wind');
   var uvIndexEl = document.getElementById('uv-index');
   var weatherIconEl = document.getElementById('weather-icon');
+
+  // The following elements will show the main data set, initially, they are hidden
+  var currentTemp = document.getElementById('current-temp');
+  var fiveDayForecastEl = document.getElementById('five-day-forecast');
+
+  currentTemp.style.display = 'flex';
+  resetBtn.style.display = 'unset';
+  fiveDayForecastEl.style.display = 'unset';
 
   // Stylize the uv-index element according to its value both the background and text color
   if (uvIndexEl <= 4) {
@@ -134,8 +143,8 @@ var updateEl = (
 
   // For the weather icon, we set the src equal to the specific url we modified and we assign the styling
   weatherIconEl.src = iconUrl;
-  weatherIconEl.style.height = '50px';
-  weatherIconEl.style.width = '50px';
+  weatherIconEl.style.height = '40px';
+  weatherIconEl.style.width = '40px';
   weatherIconEl.style.display = 'flex';
 };
 
@@ -161,8 +170,8 @@ var extractForecast = (weekData) => {
       var iconUrl = `http://openweathermap.org/img/wn/${extractedIcon}@2x.png`; // Adding the code in the URL
       weatherIconEl.src = iconUrl; // Applying the URL to the elements src
       weatherIconEl.style.display = 'flex'; // And then apply the necessary styles
-      weatherIconEl.style.height = '50px';
-      weatherIconEl.style.width = '50px';
+      weatherIconEl.style.height = '40px';
+      weatherIconEl.style.width = '40px';
 
       // Finally, add the weather, wind and humidity to the appropriate elements
       weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}°F`;
@@ -176,6 +185,14 @@ var extractForecast = (weekData) => {
     }
   }
 };
+
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+// When you hit the rest button, the shortest function to clear everything would be to simply reload the application
+var resetData = () => {
+  location.reload();
+};
+resetBtn.addEventListener('click', resetData);
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 

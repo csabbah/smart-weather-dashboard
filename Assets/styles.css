@@ -1,8 +1,122 @@
+/* ---------- ---------- ---------- Root properties */
 * {
   padding: 0;
   margin: 0;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main {
+  display: flex;
+}
+
+img {
+  /* For the weather icons */
+  display: none;
+}
+
+/* ---------- ---------- ---------- Header */
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1000px;
+  height: 40px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #020024, #090979, #00d4ff);
+
+  color: white;
+  font-weight: 800;
+}
+
+/* ---------- ---------- ---------- Form */
+
+form {
+  width: 240px;
+  margin-right: 20px;
+}
+
+form button {
+  cursor: pointer;
+}
+#enter-city {
+  text-indent: 10px;
+  margin-top: 6px;
+  margin-bottom: 9px;
+  height: 30px;
+  width: 100%;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+#enter-city::placeholder {
+  opacity: 0.6;
+  font-size: 16px;
+}
+
+#main-form h3 {
+  font-weight: 800;
+}
+#submit {
+  width: 100%;
+  height: 30px;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  background-color: rgb(41, 202, 255);
+  font-size: 15px;
+}
+
+form hr {
+  margin: 10px 0;
+}
+
+#reset {
+  display: none;
+}
+
+#history-searches button,
+#reset {
+  margin: 4px 0;
+  width: 100%;
+  height: 30px;
+  border: none;
+  border-radius: 3px;
+  color: black;
+  font-weight: 400;
+  background-color: rgb(188, 188, 188);
+  font-size: 14px;
+}
+
+/* ---------- ---------- ---------- Current weather - Main data section */
+#data {
+  width: 740px;
+}
+
+#current-temp {
+  display: none;
+}
+#current-temp {
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 0px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+#current-temp p {
+  font-size: 16px;
+  margin: 4px 0;
+}
 #uv-index {
   width: 100px;
   height: 20px;
@@ -14,8 +128,39 @@
 
 #city-weather {
   display: flex;
+  align-items: center;
 }
 
-img {
+/* ---------- ---------- ---------- Five day forecast - Main data section */
+
+#five-day-forecast {
   display: none;
+}
+
+#forecast-container {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.daily-forecast {
+  padding: 10px 5px;
+  width: 125px;
+  height: 140px;
+  background-color: rgba(79, 79, 146, 0.8);
+  color: white;
+}
+
+.daily-forecast:nth-child(1) {
+  margin-left: 0;
+}
+
+.daily-forecast p {
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.forecast-date {
+  margin-bottom: 0;
+  font-weight: 800;
 }
