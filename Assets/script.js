@@ -37,8 +37,22 @@ var extractedData = (weatherData, location) => {
   var currentWeather = weatherData.current.temp;
   var humidity = weatherData.current.humidity;
   var windSpeed = weatherData.current.wind_speed;
+  var uvIndex = weatherData.current.uvi;
+
+  // For the weather icon, we extract a specific code from the data and add it to a link
+  var extractedIcon = weatherData.current.weather[0].icon;
+  var iconUrl = `http://openweathermap.org/img/wn/${extractedIcon}@2x.png`;
+
   //  Then execute updateEl() to update the DOM elements using the above data
-  updateEl(currentWeather, feelsLike, location, humidity, windSpeed);
+  updateEl(
+    currentWeather,
+    feelsLike,
+    location,
+    humidity,
+    windSpeed,
+    uvIndex,
+    iconUrl
+  );
 
   // Execute extractForecast() to update the 5 day forecast section using the 'daily' object
   // The 'daily' object contains the weather data for other days
@@ -48,21 +62,90 @@ var extractedData = (weatherData, location) => {
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-// Updates DOM elements (textcontent) with the 5 DAY FORECAST data
+// Update DOM elements (textcontent) for the CURRENT DAY weather data
+var updateEl = (
+  currentWeather,
+  feelsLike,
+  location,
+  humidity,
+  windSpeed,
+  uvIndex,
+  iconUrl
+) => {
+  // Declare variables to hold all the required HTML elements
+  var citynameEl = document.getElementById('city-name');
+  var currentWeatherEl = document.getElementById('current-weather');
+  var feelslikeEl = document.getElementById('feels-like');
+  var humidityEl = document.getElementById('humidity');
+  var windspeedEl = document.getElementById('wind');
+  var uvIndexEl = document.getElementById('uv-index');
+  var weatherIcon = document.getElementById('weather-icon');
+
+  // Stylize the uv-index element according to its value both the background and text color
+  if (uvIndexEl <= 4) {
+    uvIndexEl.style.color = 'black';
+  }
+  if (uvIndex >= 4) {
+    uvIndexEl.style.color = 'white';
+  }
+  if (uvIndex <= 1) {
+    uvIndexEl.style.backgroundColor = 'rgb(0, 255, 13)';
+  } else if (uvIndex > 1 && uvIndex < 2) {
+    uvIndexEl.style.backgroundColor = 'rgb(151, 221, 0)';
+  } else if (uvIndex >= 2 && uvIndex <= 3) {
+    uvIndexEl.style.backgroundColor = 'rgb(214, 221, 0)';
+  } else if (uvIndex >= 3 && uvIndex <= 4) {
+    uvIndexEl.style.backgroundColor = 'rgb(221, 173, 0)';
+  } else if (uvIndex >= 4 && uvIndex <= 5) {
+    uvIndexEl.style.backgroundColor = 'rgb(221, 136, 0)';
+  } else if (uvIndex >= 5 && uvIndex <= 6) {
+    uvIndexEl.style.backgroundColor = 'rgb(221, 92, 0)';
+  } else if (uvIndex >= 6 && uvIndex <= 7) {
+    uvIndexEl.style.backgroundColor = 'rgb(221, 0, 0)';
+  } else if (uvIndex >= 7 && uvIndex <= 8) {
+    uvIndexEl.style.backgroundColor = 'rgb(221, 0, 136)';
+  } else if (uvIndex >= 8 && uvIndex <= 9) {
+    uvIndexEl.style.backgroundColor = 'rgb(221, 0, 192)';
+  } else if (uvIndex >= 9) {
+    uvIndexEl.style.backgroundColor = 'rgb(199, 0, 221)';
+  }
+
+  // Declare a variable to hold the current date
+  var date = moment().format('L'); // "MM/DD/YYYY"
+
+  // Apply the data we extracted as the textContent to the appropriate elements
+  citynameEl.textContent = `${location} ${date}`;
+  currentWeatherEl.textContent = `${currentWeather}°F`;
+  feelslikeEl.textContent = `${feelsLike}°F`;
+  windspeedEl.textContent = `${windSpeed}mph`;
+  humidityEl.textContent = `${humidity}%`;
+  uvIndexEl.textContent = uvIndex;
+
+  // For the weather icon, we set the src equal to a specific url we modified and we assign basic styling
+  weatherIcon.src = iconUrl;
+  weatherIcon.style.height = '50px';
+  weatherIcon.style.width = '50px';
+};
+
+// Update DOM elements (textcontent) for the 5 DAY FORECAST data
 var extractForecast = (weekData) => {
   // Loop through the data....
   for (let i = 0; i < weekData.length; i++) {
     // Exclude the first object since we've already used this data for the current weather
     if (i !== 0) {
+      var new_date = moment(moment(), 'L').add(i, 'days').format('L');
       // All selectors have the same label but different numeric value so increment by 1 each time
       var weatherEl = document.getElementById(`day${i}-weather`);
       var windEl = document.getElementById(`day${i}-wind`);
       var humidityEl = document.getElementById(`day${i}-humidity`);
+      var dateEl = document.getElementById(`forecast-date${i}`);
+
       // Then update the textcontent with the appropriate data
       // For each day include the max and min temperatures, wind speed and humidity
       weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}°F`;
       windEl.textContent = `${weekData[i].wind_speed}mph`;
       humidityEl.textContent = `${weekData[i].humidity}%`;
+      dateEl.textContent = new_date;
     }
 
     // Since we are only running this for loop for a 5 day forecast, break the loop at 5 iterations
@@ -72,22 +155,6 @@ var extractForecast = (weekData) => {
   }
 };
 
-// Declare variables to hold all the required HTML elements
-var citynameEl = document.getElementById('city-name');
-var currentWeatherEl = document.getElementById('current-weather');
-var feelslikeEl = document.getElementById('feels-like');
-var humidityEl = document.getElementById('humidity');
-var windspeedEl = document.getElementById('wind');
-
-// Referring to the parameters we passed in extractData()...
-// Update DOM elements (textcontent) for the CURRENT DAY weather data
-var updateEl = (currentWeather, feelsLike, location, humidity, windSpeed) => {
-  currentWeatherEl.textContent = `${currentWeather}°F`;
-  feelslikeEl.textContent = `${feelsLike}°F`;
-  citynameEl.textContent = location;
-  humidityEl.textContent = `${humidity}%`;
-  windspeedEl.textContent = `${windSpeed}mph`;
-};
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // Declare variables to hold the form and input field elements
