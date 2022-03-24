@@ -1,4 +1,5 @@
 // FOR EACH CITY THAT IS SEARCHED, ADD IT TO A SEARCH HISTORY OBJECT (LOCAL STORAGE)
+// ADD A FUNCTION TO CLEAR HISTORY SEARCHES
 // IMPORTANT - DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
 // IMPORTANT -  UV returns different value than on the openweathermap api?
 
@@ -131,7 +132,7 @@ var updateEl = (
   }
 
   // Declare a variable to hold the current date
-  var date = moment().format('L'); // "MM/DD/YYYY"
+  var date = moment().format('(L)'); // "MM/DD/YYYY"
 
   // Apply the data we extracted as the textContent to the appropriate elements
   citynameEl.textContent = `${location} ${date}`;
@@ -188,12 +189,41 @@ var extractForecast = (weekData) => {
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-// When you hit the rest button, the shortest function to clear everything would be to simply reload the application
+// Upon clicking the reset button, the shortest function to clear everything would be to reload the application
 var resetData = () => {
   location.reload();
 };
 resetBtn.addEventListener('click', resetData);
 
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+// This will hold all the button labels
+var searchHistory = [];
+
+// Create the history search buttons upon hitting search
+var createHistoryBtn = (label) => {
+  // Reference the history container
+  var historyContainer = document.getElementById('history-searches');
+
+  // Create a button element
+  var btn = document.createElement('button');
+  // Add a 'search-btn' class to each button
+  btn.classList.add('search-btn');
+
+  // Make the first letter of the search term uppercase then...
+  // add it with the original term but exclude the first letter
+  var finalLabel = label[0].toUpperCase() + label.substring(1);
+  btn.textContent = finalLabel;
+
+  // Add a type of 'button' so that these buttons don't submit the form
+  btn.type = 'button';
+
+  // Append the button(s) to the container
+  historyContainer.appendChild(btn);
+
+  // Assign a unique ID and push the label to the object for local storage
+  var id = Math.floor(Math.random() * 10000);
+  searchHistory.push({ label: finalLabel, id });
+};
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // Declare variables to hold the form and input field elements
@@ -206,6 +236,7 @@ formEl.addEventListener('submit', (e) => {
   if (inputEl.value) {
     // If the input value is NOT empty....
     extractGeoData(inputEl.value); // Use the value from the input field to execute the main function
+    createHistoryBtn(inputEl.value);
   } else {
     // Else if the value is empty, alert the user
     alert('Please enter a city');

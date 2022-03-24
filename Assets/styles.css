@@ -179,11 +179,12 @@ form hr {
 }
 
 .daily-forecast {
-  padding: 10px 5px;
+  padding: 5px 5px;
   width: 125px;
   height: 140px;
   background-color: rgba(79, 79, 146, 0.8);
   color: white;
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
 .daily-forecast:nth-child(1) {
