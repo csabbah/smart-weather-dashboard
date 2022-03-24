@@ -16,7 +16,7 @@ var extractGeoData = async (searchedCity) => {
     var url = `http://api.openweathermap.org/geo/1.0/direct?q=${searchedCity}&limit=5&appid=${APIKEY}`;
     var res = await fetch(url);
     var location = await res.json();
-    // If data doesn't exist, that means that searched up city either doesn't exist or user made a typo
+    // If data doesn't exist, that means that the searched up city either doesn't exist or the user made a typo
     if (location.length == 0 || location == null || location == undefined) {
       alert('Please type a valid city');
     } else {
@@ -132,7 +132,7 @@ var updateEl = (
   humidityEl.textContent = `${humidity}%`;
   uvIndexEl.textContent = uvIndex;
 
-  // For the weather icon, we set the src equal to a specific url we modified and we assign basic styling
+  // For the weather icon, we set the src equal to the specific url we modified and we assign the styling
   weatherIconEl.src = iconUrl;
   weatherIconEl.style.height = '50px';
   weatherIconEl.style.width = '50px';
@@ -145,7 +145,7 @@ var extractForecast = (weekData) => {
   for (let i = 0; i < weekData.length; i++) {
     // Exclude the first object since we've already used this data for the current weather
     if (i !== 0) {
-      var new_date = moment(moment(), 'L').add(i, 'days').format('L');
+      var new_date = moment(moment(), 'L').add(i, 'days').format('L'); // Increment the date by 1 day each time
       // All selectors have the same label but different numeric value so increment by 1 each time
       var weatherEl = document.getElementById(`day${i}-weather`);
       var windEl = document.getElementById(`day${i}-wind`);
@@ -153,17 +153,18 @@ var extractForecast = (weekData) => {
       var dateEl = document.getElementById(`forecast-date${i}`);
       var weatherIconEl = document.getElementById(`weather-icon-day${i}`);
 
-      // Then update the textcontent with the appropriate data:
-      // For each day include the next date, weather icon, max and min temperatures, wind speed and humidity
+      // For each day include the date
       dateEl.textContent = new_date;
 
-      var extractedIcon = weekData[i].weather[0].icon;
-      var iconUrl = `http://openweathermap.org/img/wn/${extractedIcon}@2x.png`;
-      weatherIconEl.src = iconUrl;
-      weatherIconEl.style.display = 'flex';
+      // Add the weather icon by...
+      var extractedIcon = weekData[i].weather[0].icon; // Extracting the weather icon code
+      var iconUrl = `http://openweathermap.org/img/wn/${extractedIcon}@2x.png`; // Adding the code in the URL
+      weatherIconEl.src = iconUrl; // Applying the URL to the elements src
+      weatherIconEl.style.display = 'flex'; // And then apply the necessary styles
       weatherIconEl.style.height = '50px';
       weatherIconEl.style.width = '50px';
 
+      // Finally, add the weather, wind and humidity to the appropriate elements
       weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}°F`;
       windEl.textContent = `${weekData[i].wind_speed}mph`;
       humidityEl.textContent = `${weekData[i].humidity}%`;
@@ -186,8 +187,10 @@ var formEl = document.getElementById('main-form');
 formEl.addEventListener('submit', (e) => {
   e.preventDefault; // Prevent browser refresh
   if (inputEl.value) {
+    // If the input value is NOT empty....
     extractGeoData(inputEl.value); // Use the value from the input field to execute the main function
   } else {
+    // Else if the value is empty, alert the user
     alert('Please enter a city');
   }
   // The above value would be the city name that the user picks
