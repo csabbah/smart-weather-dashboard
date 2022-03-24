@@ -200,6 +200,10 @@ var resetData = () => {
 resetBtn.addEventListener('click', resetData);
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+// All the below functions deals with generating the history buttons and storing/extracting the data to/from local storage
+
+var historyContainer = document.getElementById('history-searches');
+
 // Check to see if an object (for the search terms) is saved locally
 var localObject = localStorage.getItem('searchTerms');
 // If the local storage doesn't exist....
@@ -211,14 +215,18 @@ if (localObject == null) {
   // Parse the local data and update the above empty object with the data from local
   localObject = JSON.parse(localObject);
   searchHistory = localObject;
+  searchHistory.forEach((item) => {
+    // The functions here are the same as the ones in createHistory() below
+    var btn = document.createElement('button');
+    btn.classList.add('search-btn');
+    btn.textContent = item.searchTerm;
+    btn.type = 'button';
+    historyContainer.appendChild(btn);
+  });
 }
-console.log(searchHistory);
 
 // Generate the history search buttons upon hitting search
 var createHistoryBtn = (label) => {
-  // Reference the history container
-  var historyContainer = document.getElementById('history-searches');
-
   // Create a button element
   var btn = document.createElement('button');
   // Add a 'search-btn' class to each button
