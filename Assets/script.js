@@ -23,9 +23,8 @@ var extractGeoData = async (searchedCity) => {
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-// Extracts the MAIN data set for the weather data
+// Using Lat and Lon values from extractGeoData(), extract the MAIN weather data
 var fetchWeather = async (lat, lon, location) => {
-  // Using the Lat and Lon values from extractGeoData(), return the main source of data
   var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKEY}&units=imperial`;
   var res = await fetch(url);
   var weatherData = await res.json();
@@ -46,6 +45,7 @@ var extractedData = (weatherData, location) => {
   var forecastWeek = weatherData.daily;
   extractForecast(forecastWeek);
 };
+
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // Updates DOM elements (textcontent) with the 5 DAY FORECAST data
@@ -72,9 +72,6 @@ var extractForecast = (weekData) => {
   }
 };
 
-// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-
-// Updates DOM elements (textcontent) with the CURRENT weather data
 // Declare variables to hold all the required HTML elements
 var citynameEl = document.getElementById('city-name');
 var currentWeatherEl = document.getElementById('current-weather');
@@ -83,8 +80,8 @@ var humidityEl = document.getElementById('humidity');
 var windspeedEl = document.getElementById('wind');
 
 // Referring to the parameters we passed in extractData()...
+// Update DOM elements (textcontent) for the CURRENT DAY weather data
 var updateEl = (currentWeather, feelsLike, location, humidity, windSpeed) => {
-  // Update the textContent to the appropriate HTML elements
   currentWeatherEl.textContent = `${currentWeather}°F`;
   feelslikeEl.textContent = `${feelsLike}°F`;
   citynameEl.textContent = location;
