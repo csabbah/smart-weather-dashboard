@@ -1,4 +1,5 @@
 // FOR EACH CITY THAT IS SEARCHED, ADD IT TO A SEARCH HISTORY OBJECT (LOCAL STORAGE)
+// DON'T GENERATE A BUTTON THAT ALREADY EXISTS ALSO DON'T PUSH IT TO THE OBJECT OR LOCAL STORAGE
 // ADD A FUNCTION TO CLEAR HISTORY SEARCHES
 // IMPORTANT - DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
 // IMPORTANT -  UV returns different value than on the openweathermap api?
@@ -21,6 +22,9 @@ var extractGeoData = async (searchedCity) => {
     if (location.length == 0 || location == null || location == undefined) {
       alert('Please type a valid city');
     } else {
+      // We execute this function here to make sure we ONLY store the valid terms that had data
+      createHistoryBtn(searchedCity);
+
       // After Lat and Lon have been extracted, fetch for the MAIN data using those coordinates
       // location[0].name holds the city name which will will be passed down across multiple functions
       fetchWeather(location[0].lat, location[0].lon, location[0].name);
@@ -196,10 +200,21 @@ var resetData = () => {
 resetBtn.addEventListener('click', resetData);
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-// This will hold all the button labels
-var searchHistory = [];
+// Check to see if an object (for the search terms) is saved locally
+var localObject = localStorage.getItem('searchTerms');
+// If the local storage doesn't exist....
+if (localObject == null) {
+  // For this session declare an empty object
+  var searchHistory = [];
+  // Otherwise if local storage does exist...
+} else {
+  // Parse the local data and update the above empty object with the data from local
+  localObject = JSON.parse(localObject);
+  searchHistory = localObject;
+}
+console.log(searchHistory);
 
-// Create the history search buttons upon hitting search
+// Generate the history search buttons upon hitting search
 var createHistoryBtn = (label) => {
   // Reference the history container
   var historyContainer = document.getElementById('history-searches');
@@ -220,10 +235,19 @@ var createHistoryBtn = (label) => {
   // Append the button(s) to the container
   historyContainer.appendChild(btn);
 
-  // Assign a unique ID and push the label to the object for local storage
-  var id = Math.floor(Math.random() * 10000);
-  searchHistory.push({ label: finalLabel, id });
+  // Pushes the search term to an object then stores that object to local storage
+  storeLocally(searchHistory, finalLabel);
 };
+
+var storeLocally = (object, label) => {
+  // Push the label and a unique ID to the object
+  var id = Math.floor(Math.random() * 10000);
+  searchHistory.push({ searchTerm: label, id });
+
+  // Then store the full object locally
+  localStorage.setItem('searchTerms', JSON.stringify(object));
+};
+
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // Declare variables to hold the form and input field elements
@@ -235,8 +259,7 @@ formEl.addEventListener('submit', (e) => {
   e.preventDefault; // Prevent browser refresh
   if (inputEl.value) {
     // If the input value is NOT empty....
-    extractGeoData(inputEl.value); // Use the value from the input field to execute the main function
-    createHistoryBtn(inputEl.value);
+    extractGeoData(inputEl.value.toLowerCase()); // Use the value from the input field to execute the main function
   } else {
     // Else if the value is empty, alert the user
     alert('Please enter a city');
