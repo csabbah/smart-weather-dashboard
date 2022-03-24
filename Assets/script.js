@@ -1,8 +1,8 @@
-// INCLUDE DATE - WORK OFF CURRENT DATE THEN INCREMENT THE DATE FOR THE 5 DAY FORECAST
 // CATCH ALL THE ERRORS I.E. FAILED TO FETCH DATA, NETWORK ISSUES AND ETC...
 // ADD A CONDITION TO REJECT EMPTY INPUT VALUES
 // FOR EACH CITY THAT IS SEARCHED, ADD IT TO A SEARCH HISTORY OBJECT (LOCAL STORAGE)
-// DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
+// IMPORTANT - DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
+// IMPORTANT -  UV returns different value than on the openweathermap api?
 
 // The API key to allow for usage of the API
 var APIKEY = '67ad538a4c7356a83bfb4f14c6e9b666';
@@ -79,7 +79,7 @@ var updateEl = (
   var humidityEl = document.getElementById('humidity');
   var windspeedEl = document.getElementById('wind');
   var uvIndexEl = document.getElementById('uv-index');
-  var weatherIcon = document.getElementById('weather-icon');
+  var weatherIconEl = document.getElementById('weather-icon');
 
   // Stylize the uv-index element according to its value both the background and text color
   if (uvIndexEl <= 4) {
@@ -122,9 +122,10 @@ var updateEl = (
   uvIndexEl.textContent = uvIndex;
 
   // For the weather icon, we set the src equal to a specific url we modified and we assign basic styling
-  weatherIcon.src = iconUrl;
-  weatherIcon.style.height = '50px';
-  weatherIcon.style.width = '50px';
+  weatherIconEl.src = iconUrl;
+  weatherIconEl.style.height = '50px';
+  weatherIconEl.style.width = '50px';
+  weatherIconEl.style.display = 'flex';
 };
 
 // Update DOM elements (textcontent) for the 5 DAY FORECAST data
@@ -139,16 +140,25 @@ var extractForecast = (weekData) => {
       var windEl = document.getElementById(`day${i}-wind`);
       var humidityEl = document.getElementById(`day${i}-humidity`);
       var dateEl = document.getElementById(`forecast-date${i}`);
+      var weatherIconEl = document.getElementById(`weather-icon-day${i}`);
 
-      // Then update the textcontent with the appropriate data
-      // For each day include the max and min temperatures, wind speed and humidity
+      // Then update the textcontent with the appropriate data:
+      // For each day include the next date, weather icon, max and min temperatures, wind speed and humidity
+      dateEl.textContent = new_date;
+
+      var extractedIcon = weekData[i].weather[0].icon;
+      var iconUrl = `http://openweathermap.org/img/wn/${extractedIcon}@2x.png`;
+      weatherIconEl.src = iconUrl;
+      weatherIconEl.style.display = 'flex';
+      weatherIconEl.style.height = '50px';
+      weatherIconEl.style.width = '50px';
+
       weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}°F`;
       windEl.textContent = `${weekData[i].wind_speed}mph`;
       humidityEl.textContent = `${weekData[i].humidity}%`;
-      dateEl.textContent = new_date;
     }
 
-    // Since we are only running this for loop for a 5 day forecast, break the loop at 5 iterations
+    // Since we are only running this loop for a 5 day forecast, break the loop at 5 iterations
     if (i == 5) {
       break;
     }
