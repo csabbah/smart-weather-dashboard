@@ -1,8 +1,6 @@
-// FOR EACH CITY THAT IS SEARCHED, ADD IT TO A SEARCH HISTORY OBJECT (LOCAL STORAGE)
-// DON'T GENERATE A BUTTON THAT ALREADY EXISTS ALSO DON'T PUSH IT TO THE OBJECT OR LOCAL STORAGE
-// ADD A FUNCTION TO CLEAR HISTORY SEARCHES
 // IMPORTANT - DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
 // IMPORTANT -  UV returns different value than on the openweathermap api?
+// ADD FUNCTION THAT WHEN YOU CLICK ON A HISTORY BUTTON, LOAD UP THE DATA
 
 // The API key to allow for usage of the API
 var APIKEY = '67ad538a4c7356a83bfb4f14c6e9b666';
@@ -199,9 +197,17 @@ var resetData = () => {
 };
 resetBtn.addEventListener('click', resetData);
 
+// Upon clicking the clear history button, clear the storage and reload the application
+var clearHistory = () => {
+  localStorage.clear();
+  location.reload();
+};
+
+var clearHistoryBtn = document.getElementById('clear-history');
+clearHistoryBtn.addEventListener('click', clearHistory);
+
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // All the below functions deals with generating the history buttons and storing/extracting the data to/from local storage
-
 var historyContainer = document.getElementById('history-searches');
 
 // Check to see if an object (for the search terms) is saved locally
@@ -223,28 +229,60 @@ if (localObject == null) {
     btn.type = 'button';
     historyContainer.appendChild(btn);
   });
+
+  clearHistoryBtn.style.display = 'unset';
 }
 
 // Generate the history search buttons upon hitting search
 var createHistoryBtn = (label) => {
-  // Create a button element
-  var btn = document.createElement('button');
-  // Add a 'search-btn' class to each button
-  btn.classList.add('search-btn');
-
+  var uniqueButton = true;
   // Make the first letter of the search term uppercase then...
   // add it with the original term but exclude the first letter
   var finalLabel = label[0].toUpperCase() + label.substring(1);
-  btn.textContent = finalLabel;
 
-  // Add a type of 'button' so that these buttons don't submit the form
-  btn.type = 'button';
+  // If the object length is 0, generate the button normally
+  if (searchHistory.length == 0) {
+    clearHistoryBtn.style.display = 'unset';
 
-  // Append the button(s) to the container
-  historyContainer.appendChild(btn);
+    // Create a button element
+    var btn = document.createElement('button');
+    // Add a 'search-btn' class to each button
+    btn.classList.add('search-btn');
+    // Then update the textcontent with the final label
+    btn.textContent = finalLabel;
+    // Add a type of 'button' so that these buttons don't submit the form
+    btn.type = 'button';
+    // Append the button(s) to the container
+    historyContainer.appendChild(btn);
+    // Pushes the search term to an object then stores that object to local storage
+    storeLocally(searchHistory, finalLabel);
+    // Set to false so we don't double generate
+    uniqueButton = false;
+  } else {
+    // Go through ALL data, if the current label matches with a label in our object,
+    // set uniqueButton to false so that we don't generate the button
+    searchHistory.forEach((item) => {
+      if (item.searchTerm == finalLabel) {
+        uniqueButton = false;
+      }
+    });
+  }
 
-  // Pushes the search term to an object then stores that object to local storage
-  storeLocally(searchHistory, finalLabel);
+  // Only generate the button if it is unique and not already existing in the object
+  if (uniqueButton) {
+    // Create a button element
+    var btn = document.createElement('button');
+    // Add a 'search-btn' class to each button
+    btn.classList.add('search-btn');
+    // Then update the textcontent with the final label
+    btn.textContent = finalLabel;
+    // Add a type of 'button' so that these buttons don't submit the form
+    btn.type = 'button';
+    // Append the button(s) to the container
+    historyContainer.appendChild(btn);
+    // Pushes the search term to an object then stores that object to local storage
+    storeLocally(searchHistory, finalLabel);
+  }
 };
 
 var storeLocally = (object, label) => {

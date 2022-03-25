@@ -90,11 +90,16 @@ form hr {
   margin-bottom: 6px;
 }
 
+#clear-history {
+  display: none;
+}
+
 #reset {
   display: none;
 }
 
 #reset,
+#clear-history,
 #history-searches button {
   transform: scale(1);
   width: 100%;
@@ -109,6 +114,7 @@ form hr {
 }
 
 #reset:hover,
+#clear-history:hover,
 #history-searches button:hover {
   transform: scale(1.02);
   background-color: rgb(178, 178, 178);
@@ -116,14 +122,17 @@ form hr {
 }
 
 #reset:active,
+#clear-history:active,
 #history-searches button:active {
   transform: scale(1);
   background-color: rgb(200, 200, 200);
 }
 
-#reset {
+#reset,
+#clear-history {
   margin-top: 8px;
 }
+
 #history-searches button {
   margin: 4px 0;
 }
