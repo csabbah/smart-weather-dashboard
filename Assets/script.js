@@ -295,6 +295,19 @@ var storeLocally = (object, label) => {
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+// Declare a variable to hold the active history buttons
+var historyBtns = document.getElementById('history-searches');
+
+// Iterate over each child and add a 'click' event listener...
+Array.prototype.forEach.call(historyBtns.children, (child) => {
+  child.addEventListener('click', () => {
+    // Whatever button the user clicks on....
+    // Extract the innerText of each button and execute the main function according to that value
+    extractGeoData(child.innerText.toLowerCase());
+  });
+});
+
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // Declare variables to hold the form and input field elements
 var inputEl = document.getElementById('enter-city');
