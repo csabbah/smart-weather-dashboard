@@ -42,9 +42,6 @@ form {
   margin-right: 20px;
 }
 
-form button {
-  cursor: pointer;
-}
 #enter-city {
   text-indent: 10px;
   margin-top: 6px;
@@ -99,6 +96,7 @@ form hr {
 }
 
 #reset,
+#switch-metric,
 #clear-history,
 #history-searches button {
   transform: scale(1);
@@ -110,10 +108,12 @@ form hr {
   font-weight: 400;
   background-color: rgb(200, 200, 200);
   font-size: 14px;
+  cursor: pointer;
   transition: 0.1s all ease-in-out;
 }
 
 #reset:hover,
+#switch-metric:hover,
 #clear-history:hover,
 #history-searches button:hover {
   transform: scale(1.02);
@@ -122,6 +122,7 @@ form hr {
 }
 
 #reset:active,
+#switch-metric:active,
 #clear-history:active,
 #history-searches button:active {
   transform: scale(1);
@@ -138,6 +139,10 @@ form hr {
 }
 
 /* ---------- ---------- ---------- Current weather - Main data section */
+#switch-metric {
+  margin-top: 10px;
+  width: 135px;
+}
 #data {
   width: 740px;
 }

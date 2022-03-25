@@ -8,7 +8,7 @@ window.location.href = 'https://csabbah.github.io/smart-weather-dashboard/?#';
 
 // Extracts the Longitude and Latitude of a city that the client searches up THEN execute the MAIN fetch function
 // IMPORTANT - Since we execute this API fetch function first, we only need to catch the errors here alone
-var extractGeoData = async (searchedCity) => {
+var extractGeoData = async (searchedCity, isMetric) => {
   // Execute a try and catch block to catch if there is no network
   try {
     // Update the URL with the searched city and include the API key
@@ -24,7 +24,12 @@ var extractGeoData = async (searchedCity) => {
 
       // After Lat and Lon have been extracted, fetch for the MAIN data using those coordinates
       // location[0].name holds the city name which will will be passed down across multiple functions
-      fetchWeather(location[0].lat, location[0].lon, location[0].name);
+      fetchWeather(
+        location[0].lat,
+        location[0].lon,
+        location[0].name,
+        isMetric
+      );
     }
     // If there is no network connection, execute the catch block function
   } catch (error) {
@@ -36,16 +41,19 @@ var extractGeoData = async (searchedCity) => {
 
 // Using Lat and Lon values from extractGeoData(), extract the MAIN weather data
 // IMPORTANT - Since we caught the no network and no valid data issues above, we DO NOT need to catch them here
-var fetchWeather = async (lat, lon, location) => {
-  var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKEY}&units=imperial`;
-  var res = await fetch(url);
+var fetchWeather = async (lat, lon, location, isMetric) => {
+  var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKEY}&units=${
+    isMetric ? 'metric' : 'imperial'
+  }`;
 
+  var res = await fetch(url);
   var weatherData = await res.json();
-  extractedData(weatherData, location);
+
+  extractedData(weatherData, location, isMetric);
 };
 
 // Referring to the main data set (weatherData), declare variables to hold required values
-var extractedData = (weatherData, location) => {
+var extractedData = (weatherData, location, isMetric) => {
   var feelsLike = weatherData.current.feels_like;
   var currentWeather = weatherData.current.temp;
   var humidity = weatherData.current.humidity;
@@ -64,13 +72,14 @@ var extractedData = (weatherData, location) => {
     humidity,
     windSpeed,
     uvIndex,
-    iconUrl
+    iconUrl,
+    isMetric
   );
 
   // Execute extractForecast() to update the 5 day forecast section using the 'daily' object
   // The 'daily' object contains the weather data for other days
   var forecastWeek = weatherData.daily;
-  extractForecast(forecastWeek);
+  extractForecast(forecastWeek, isMetric);
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
@@ -84,7 +93,8 @@ var updateEl = (
   humidity,
   windSpeed,
   uvIndex,
-  iconUrl
+  iconUrl,
+  isMetric
 ) => {
   // Declare variables to hold all the required HTML
   var citynameEl = document.getElementById('city-name');
@@ -137,9 +147,9 @@ var updateEl = (
 
   // Apply the data we extracted as the textContent to the appropriate elements
   citynameEl.textContent = `${location} ${date}`;
-  currentWeatherEl.textContent = `${currentWeather}°F`;
-  feelslikeEl.textContent = `${feelsLike}°F`;
-  windspeedEl.textContent = `${windSpeed}mph`;
+  currentWeatherEl.textContent = `${currentWeather}${isMetric ? '°C' : '°F'}`;
+  feelslikeEl.textContent = `${feelsLike}${isMetric ? '°C' : '°F'}`;
+  windspeedEl.textContent = `${windSpeed}${isMetric ? 'kmh' : 'mph'}`;
   humidityEl.textContent = `${humidity}%`;
   uvIndexEl.textContent = uvIndex;
 
@@ -151,7 +161,7 @@ var updateEl = (
 };
 
 // Update DOM elements (textcontent) for the 5 DAY FORECAST data
-var extractForecast = (weekData) => {
+var extractForecast = (weekData, isMetric) => {
   // Loop through the data....
   for (let i = 0; i < weekData.length; i++) {
     // Exclude the first object since we've already used this data for the current weather
@@ -176,8 +186,12 @@ var extractForecast = (weekData) => {
       weatherIconEl.style.width = '40px';
 
       // Finally, add the weather, wind and humidity to the appropriate elements
-      weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}°F`;
-      windEl.textContent = `${weekData[i].wind_speed}mph`;
+      weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}${
+        isMetric ? '°C' : '°F'
+      }`;
+      windEl.textContent = `${weekData[i].wind_speed}${
+        isMetric ? 'kmh' : 'mph'
+      }`;
       humidityEl.textContent = `${weekData[i].humidity}%`;
     }
 
@@ -316,6 +330,27 @@ const historyBtnEvent = () => {
 };
 // Execute globally so it works right away
 historyBtnEvent();
+
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+// Switch all data by re-executing the fetch and updating url endpoint from imperial to metric
+var isMetric = true;
+
+var switchMetric = () => {
+  var currentCity = document
+    .getElementById('city-name')
+    .textContent.split(' ')[0];
+  extractGeoData(currentCity, isMetric);
+
+  if (isMetric) {
+    isMetric = false;
+  } else {
+    isMetric = true;
+  }
+};
+
+var metricBtn = document.getElementById('switch-metric');
+metricBtn.addEventListener('click', switchMetric);
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
