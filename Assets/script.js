@@ -1,6 +1,5 @@
 // IMPORTANT - DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
 // IMPORTANT -  UV returns different value than on the openweathermap api?
-// ADD FUNCTION THAT WHEN YOU CLICK ON A HISTORY BUTTON, LOAD UP THE DATA
 
 // The API key to allow for usage of the API
 var APIKEY = '67ad538a4c7356a83bfb4f14c6e9b666';
@@ -258,6 +257,8 @@ var createHistoryBtn = (label) => {
     storeLocally(searchHistory, finalLabel);
     // Set to false so we don't double generate
     uniqueButton = false;
+    // Execute this here to make sure it is working at this state as well
+    historyBtnEvent();
   } else {
     // Go through ALL data, if the current label matches with a label in our object,
     // set uniqueButton to false so that we don't generate the button
@@ -282,6 +283,8 @@ var createHistoryBtn = (label) => {
     historyContainer.appendChild(btn);
     // Pushes the search term to an object then stores that object to local storage
     storeLocally(searchHistory, finalLabel);
+    // Execute this here to make sure it is working at this state as well
+    historyBtnEvent();
   }
 };
 
@@ -295,17 +298,21 @@ var storeLocally = (object, label) => {
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-// Declare a variable to hold the active history buttons
-var historyBtns = document.getElementById('history-searches');
+const historyBtnEvent = () => {
+  // Declare a variable to hold the active history buttons
+  var historyBtns = document.getElementById('history-searches');
 
-// Iterate over each child and add a 'click' event listener...
-Array.prototype.forEach.call(historyBtns.children, (child) => {
-  child.addEventListener('click', () => {
-    // Whatever button the user clicks on....
-    // Extract the innerText of each button and execute the main function according to that value
-    extractGeoData(child.innerText.toLowerCase());
+  // Iterate over each child and add a 'click' event listener...
+  Array.prototype.forEach.call(historyBtns.children, (child) => {
+    child.addEventListener('click', () => {
+      // Whatever button the user clicks on....
+      // Extract the innerText of each button and execute the main function according to that value
+      extractGeoData(child.innerText.toLowerCase());
+    });
   });
-});
+};
+// Execute globally so it works right away
+historyBtnEvent();
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
