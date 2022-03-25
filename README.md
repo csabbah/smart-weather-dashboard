@@ -12,7 +12,7 @@ UofT challenge #6: Server-Side APIs Challenge: Weather Dashboard. This applicati
 
 ## Website
 
-https://csabbah.github.io/smart-weather-dashboard/
+https://csabbah.github.io/smart-weather-dashboard/?#
 
 ## Contribution
 
