@@ -18,4 +18,4 @@ https://csabbah.github.io/smart-weather-dashboard/?#
 
 Made with ❤️ by Carlos Sabbah
 
-<img width="1105" alt="Screen Shot 2022-03-25 at 10 53 58 AM" src="https://user-images.githubusercontent.com/91699101/160145252-0ebc5826-d263-475c-a8f1-1ed932db08dc.png">
+<img width="1487" alt="Screen Shot 2022-03-25 at 5 56 31 PM" src="https://user-images.githubusercontent.com/91699101/160207776-0916644d-2fe8-4ae1-a42e-7865f4039063.png">
