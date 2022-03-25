@@ -264,7 +264,6 @@ var checkHistoryBtns = (label) => {
   // Only generate the button if it is unique and not already existing in the object
   if (uniqueButton) {
     createButtons(finalLabel);
-
     // Pushes the search term to an object then stores that object to local storage
     storeLocally(searchHistory, finalLabel);
     // Execute this here to make sure it is working at this state as well
@@ -298,7 +297,7 @@ var storeLocally = (object, label) => {
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-// This executues the event listener for all active history buttons
+// This executes the event listener for all active history buttons
 const historyBtnEvent = () => {
   // Declare a variable to hold the active history buttons
   var historyBtns = document.getElementById('history-searches');
