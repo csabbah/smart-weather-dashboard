@@ -8,7 +8,7 @@ window.location.href = 'https://csabbah.github.io/smart-weather-dashboard/?#';
 
 // Extracts the Longitude and Latitude of a city that the client searches up THEN execute the MAIN fetch function
 // IMPORTANT - Since we execute this API fetch function first, we only need to catch the errors here alone
-var extractGeoData = async (searchedCity, isMetric) => {
+var extractGeoData = async (searchedCity) => {
   // Execute a try and catch block to catch if there is no network
   try {
     // Update the URL with the searched city and include the API key
@@ -24,12 +24,7 @@ var extractGeoData = async (searchedCity, isMetric) => {
 
       // After Lat and Lon have been extracted, fetch for the MAIN data using those coordinates
       // location[0].name holds the city name which will will be passed down across multiple functions
-      fetchWeather(
-        location[0].lat,
-        location[0].lon,
-        location[0].name,
-        isMetric
-      );
+      fetchWeather(location[0].lat, location[0].lon, location[0].name);
     }
     // If there is no network connection, execute the catch block function
   } catch (error) {
@@ -41,19 +36,16 @@ var extractGeoData = async (searchedCity, isMetric) => {
 
 // Using Lat and Lon values from extractGeoData(), extract the MAIN weather data
 // IMPORTANT - Since we caught the no network and no valid data issues above, we DO NOT need to catch them here
-var fetchWeather = async (lat, lon, location, isMetric) => {
-  var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKEY}&units=${
-    isMetric ? 'metric' : 'imperial'
-  }`;
-
+var fetchWeather = async (lat, lon, location) => {
+  var url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKEY}&units=imperial`;
   var res = await fetch(url);
-  var weatherData = await res.json();
 
-  extractedData(weatherData, location, isMetric);
+  var weatherData = await res.json();
+  extractedData(weatherData, location);
 };
 
 // Referring to the main data set (weatherData), declare variables to hold required values
-var extractedData = (weatherData, location, isMetric) => {
+var extractedData = (weatherData, location) => {
   var feelsLike = weatherData.current.feels_like;
   var currentWeather = weatherData.current.temp;
   var humidity = weatherData.current.humidity;
@@ -72,14 +64,13 @@ var extractedData = (weatherData, location, isMetric) => {
     humidity,
     windSpeed,
     uvIndex,
-    iconUrl,
-    isMetric
+    iconUrl
   );
 
   // Execute extractForecast() to update the 5 day forecast section using the 'daily' object
   // The 'daily' object contains the weather data for other days
   var forecastWeek = weatherData.daily;
-  extractForecast(forecastWeek, isMetric);
+  extractForecast(forecastWeek);
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
@@ -93,8 +84,7 @@ var updateEl = (
   humidity,
   windSpeed,
   uvIndex,
-  iconUrl,
-  isMetric
+  iconUrl
 ) => {
   // Declare variables to hold all the required HTML
   var citynameEl = document.getElementById('city-name');
@@ -147,9 +137,9 @@ var updateEl = (
 
   // Apply the data we extracted as the textContent to the appropriate elements
   citynameEl.textContent = `${location} ${date}`;
-  currentWeatherEl.textContent = `${currentWeather}${isMetric ? '°C' : '°F'}`;
-  feelslikeEl.textContent = `${feelsLike}${isMetric ? '°C' : '°F'}`;
-  windspeedEl.textContent = `${windSpeed}${isMetric ? 'kmh' : 'mph'}`;
+  currentWeatherEl.textContent = `${currentWeather}°F`;
+  feelslikeEl.textContent = `${feelsLike}°F`;
+  windspeedEl.textContent = `${windSpeed}mph`;
   humidityEl.textContent = `${humidity}%`;
   uvIndexEl.textContent = uvIndex;
 
@@ -161,7 +151,7 @@ var updateEl = (
 };
 
 // Update DOM elements (textcontent) for the 5 DAY FORECAST data
-var extractForecast = (weekData, isMetric) => {
+var extractForecast = (weekData) => {
   // Loop through the data....
   for (let i = 0; i < weekData.length; i++) {
     // Exclude the first object since we've already used this data for the current weather
@@ -186,12 +176,8 @@ var extractForecast = (weekData, isMetric) => {
       weatherIconEl.style.width = '40px';
 
       // Finally, add the weather, wind and humidity to the appropriate elements
-      weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}${
-        isMetric ? '°C' : '°F'
-      }`;
-      windEl.textContent = `${weekData[i].wind_speed}${
-        isMetric ? 'kmh' : 'mph'
-      }`;
+      weatherEl.textContent = `${weekData[i].temp.max}/${weekData[i].temp.min}°F`;
+      windEl.textContent = `${weekData[i].wind_speed}mph`;
       humidityEl.textContent = `${weekData[i].humidity}%`;
     }
 
@@ -333,19 +319,92 @@ historyBtnEvent();
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-// Switch all data by re-executing the fetch and updating url endpoint from imperial to metric
-var isMetric = true;
-
+// In this function, i convert ALL appropriate metrics using specific equations and also change the label of the unit
 var switchMetric = () => {
-  var currentCity = document
-    .getElementById('city-name')
-    .textContent.split(' ')[0];
-  extractGeoData(currentCity, isMetric);
+  var currentWeatherEl = document.getElementById('current-weather');
+  var feelslikeEl = document.getElementById('feels-like');
+  var windspeedEl = document.getElementById('wind');
 
-  // Invert the boolean so we invert the metric effectively
-  isMetric == true ? (isMetric = false) : (isMetric = true);
+  // Convert from MPH to KMG and vice versa
+  if (windspeedEl.textContent.includes('mph')) {
+    // Take the CURRENT value only
+    var activeWind = windspeedEl.innerText.split('mph')[0];
+    // Multiply it by 1.6
+    var newWind = activeWind * 1.609344;
+    // And update the textcontent with the new value
+    windspeedEl.textContent = `${newWind.toFixed(2)}kmh`;
+  } else {
+    // Same function as above but opposite
+    var activeWind = windspeedEl.innerText.split('kmh')[0];
+    var newWind = activeWind / 1.609344;
+    windspeedEl.textContent = `${newWind.toFixed(2)}mph`;
+  }
+
+  // Convert from F to C and vice versa
+  if (
+    // Check the current temperature
+    currentWeatherEl.textContent.includes('°F') &&
+    feelslikeEl.textContent.includes('°F')
+  ) {
+    // Calculate accordingly
+    var feelslikeCurrent = feelslikeEl.innerText.split('°F')[0];
+    var newFeelsLike = ((feelslikeCurrent - 32) * 5) / 9;
+    feelslikeEl.textContent = `${newFeelsLike.toFixed(2)}°C`;
+
+    var activeCurrentWeather = currentWeatherEl.innerText.split('°F')[0];
+    var newCurrentWeather = ((activeCurrentWeather - 32) * 5) / 9;
+    currentWeatherEl.textContent = `${newCurrentWeather.toFixed(2)}°C`;
+  } else {
+    var feelslikeCurrent = feelslikeEl.innerText.split('°C')[0];
+    var newFeelsLike = (feelslikeCurrent * 9) / 5 + 32;
+    feelslikeEl.textContent = `${newFeelsLike.toFixed(2)}°F`;
+
+    var activeCurrentWeather = currentWeatherEl.innerText.split('°C')[0];
+    var newCurrentWeather = (activeCurrentWeather * 9) / 5 + 32;
+    currentWeatherEl.textContent = `${newCurrentWeather.toFixed(2)}°F`;
+  }
+
+  // Same idea applies here as the above method but it is for a node list
+  var forecastWeatherEl = document.querySelectorAll('.forecast-temp');
+  for (let i = 0; i < forecastWeatherEl.length; i++) {
+    if (forecastWeatherEl[i].textContent.includes('°F')) {
+      var currentForecastTemp = forecastWeatherEl[i].innerText.split('°F')[0];
+      var currentTemp1 = currentForecastTemp.split('/')[0];
+      var currentTemp2 = currentForecastTemp.split('/')[1];
+      var newTemp1 = ((currentTemp1 - 32) * 5) / 9;
+      var newTemp2 = ((currentTemp2 - 32) * 5) / 9;
+      forecastWeatherEl[i].textContent = `${newTemp1.toFixed(
+        2
+      )}/${newTemp2.toFixed(2)}°C`;
+    } else {
+      var currentForecastTemp = forecastWeatherEl[i].innerText.split('°C')[0];
+      var currentTemp1 = currentForecastTemp.split('/')[0];
+      var currentTemp2 = currentForecastTemp.split('/')[1];
+      var newTemp1 = (currentTemp1 * 9) / 5 + 32;
+      var newTemp2 = (currentTemp2 * 9) / 5 + 32;
+      forecastWeatherEl[i].textContent = `${newTemp1.toFixed(
+        2
+      )}/${newTemp2.toFixed(2)}°F`;
+    }
+  }
+
+  var forecastWindEl = document.querySelectorAll('.forecast-wind');
+  for (let i = 0; i < forecastWindEl.length; i++) {
+    if (forecastWindEl[i].textContent.includes('mph')) {
+      var currentForecastWind = forecastWindEl[i].innerText.split('mph')[0];
+      // Multiply it by 1.6
+      var newForecastWind = currentForecastWind * 1.609344;
+      // And update the textcontent with the new value
+      forecastWindEl[i].textContent = `${newForecastWind.toFixed(2)}kmh`;
+    } else {
+      var currentForecastWind = forecastWindEl[i].innerText.split('kmh')[0];
+
+      var newForecastWind = currentForecastWind / 1.609344;
+      forecastWindEl[i].textContent = `${newForecastWind.toFixed(2)}mph`;
+    }
+  }
 };
-// Upon clicking the switch metric button, execute the above function
+
 var metricBtn = document.getElementById('switch-metric');
 metricBtn.addEventListener('click', switchMetric);
 
