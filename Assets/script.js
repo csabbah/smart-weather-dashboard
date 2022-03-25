@@ -342,13 +342,10 @@ var switchMetric = () => {
     .textContent.split(' ')[0];
   extractGeoData(currentCity, isMetric);
 
-  if (isMetric) {
-    isMetric = false;
-  } else {
-    isMetric = true;
-  }
+  // Invert the boolean so we invert the metric effectively
+  isMetric == true ? (isMetric = false) : (isMetric = true);
 };
-
+// Upon clicking the switch metric button, execute the above function
 var metricBtn = document.getElementById('switch-metric');
 metricBtn.addEventListener('click', switchMetric);
 
