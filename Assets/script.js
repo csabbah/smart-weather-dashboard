@@ -1,6 +1,3 @@
-// IMPORTANT - DOUBLE CHECK ALL CITY SEARCHES RETURN CORRECT DATA
-// IMPORTANT -  UV returns different value than on the openweathermap api?
-
 // The API key to allow for usage of the API
 var APIKEY = '67ad538a4c7356a83bfb4f14c6e9b666';
 
@@ -232,7 +229,7 @@ if (localObject == null) {
   clearHistoryBtn.style.display = 'unset';
 }
 
-// Generate the history search buttons upon hitting search
+// This function will only generate the unique history buttons
 var createHistoryBtn = (label) => {
   var uniqueButton = true;
   // Make the first letter of the search term uppercase then...
@@ -243,16 +240,8 @@ var createHistoryBtn = (label) => {
   if (searchHistory.length == 0) {
     clearHistoryBtn.style.display = 'unset';
 
-    // Create a button element
-    var btn = document.createElement('button');
-    // Add a 'search-btn' class to each button
-    btn.classList.add('search-btn');
-    // Then update the textcontent with the final label
-    btn.textContent = finalLabel;
-    // Add a type of 'button' so that these buttons don't submit the form
-    btn.type = 'button';
-    // Append the button(s) to the container
-    historyContainer.appendChild(btn);
+    // Generate the button elements
+    createButtons(finalLabel);
     // Pushes the search term to an object then stores that object to local storage
     storeLocally(searchHistory, finalLabel);
     // Set to false so we don't double generate
@@ -271,16 +260,8 @@ var createHistoryBtn = (label) => {
 
   // Only generate the button if it is unique and not already existing in the object
   if (uniqueButton) {
-    // Create a button element
-    var btn = document.createElement('button');
-    // Add a 'search-btn' class to each button
-    btn.classList.add('search-btn');
-    // Then update the textcontent with the final label
-    btn.textContent = finalLabel;
-    // Add a type of 'button' so that these buttons don't submit the form
-    btn.type = 'button';
-    // Append the button(s) to the container
-    historyContainer.appendChild(btn);
+    createButtons(finalLabel);
+
     // Pushes the search term to an object then stores that object to local storage
     storeLocally(searchHistory, finalLabel);
     // Execute this here to make sure it is working at this state as well
@@ -288,6 +269,21 @@ var createHistoryBtn = (label) => {
   }
 };
 
+// Generate the history search buttons upon hitting search
+function createButtons(finalLabel) {
+  // Create a button element
+  var btn = document.createElement('button');
+  // Add a 'search-btn' class to each button
+  btn.classList.add('search-btn');
+  // Then update the textcontent with the final label
+  btn.textContent = finalLabel;
+  // Add a type of 'button' so that these buttons don't submit the form
+  btn.type = 'button';
+  // Append the button(s) to the container
+  historyContainer.appendChild(btn);
+}
+
+// Stores object to local storage
 var storeLocally = (object, label) => {
   // Push the label and a unique ID to the object
   var id = Math.floor(Math.random() * 10000);
