@@ -17,7 +17,7 @@ var extractGeoData = async (searchedCity) => {
       alert('Please type a valid city');
     } else {
       // We execute this function here to make sure we ONLY store the valid terms that had data
-      createHistoryBtn(searchedCity);
+      checkHistoryBtns(searchedCity);
 
       // After Lat and Lon have been extracted, fetch for the MAIN data using those coordinates
       // location[0].name holds the city name which will will be passed down across multiple functions
@@ -203,7 +203,9 @@ var clearHistoryBtn = document.getElementById('clear-history');
 clearHistoryBtn.addEventListener('click', clearHistory);
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-// All the below functions deals with generating the history buttons and storing/extracting the data to/from local storage
+
+// All the below functions deals with generating the history buttons and...
+// storing/extracting the data to/from local storage
 var historyContainer = document.getElementById('history-searches');
 
 // Check to see if an object (for the search terms) is saved locally
@@ -219,18 +221,19 @@ if (localObject == null) {
   searchHistory = localObject;
   searchHistory.forEach((item) => {
     // The functions here are the same as the ones in createHistory() below
+    // This will generate the history button elements upon application load
     var btn = document.createElement('button');
     btn.classList.add('search-btn');
     btn.textContent = item.searchTerm;
     btn.type = 'button';
     historyContainer.appendChild(btn);
   });
-
+  // Reveal the clear history button
   clearHistoryBtn.style.display = 'unset';
 }
 
-// This function will only generate the unique history buttons
-var createHistoryBtn = (label) => {
+// This function will check the buttons and ONLY generate the unique history buttons
+var checkHistoryBtns = (label) => {
   var uniqueButton = true;
   // Make the first letter of the search term uppercase then...
   // add it with the original term but exclude the first letter
@@ -270,7 +273,7 @@ var createHistoryBtn = (label) => {
 };
 
 // Generate the history search buttons upon hitting search
-function createButtons(finalLabel) {
+var createButtons = (finalLabel) => {
   // Create a button element
   var btn = document.createElement('button');
   // Add a 'search-btn' class to each button
@@ -281,7 +284,7 @@ function createButtons(finalLabel) {
   btn.type = 'button';
   // Append the button(s) to the container
   historyContainer.appendChild(btn);
-}
+};
 
 // Stores object to local storage
 var storeLocally = (object, label) => {
@@ -294,6 +297,8 @@ var storeLocally = (object, label) => {
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+// This executues the event listener for all active history buttons
 const historyBtnEvent = () => {
   // Declare a variable to hold the active history buttons
   var historyBtns = document.getElementById('history-searches');
