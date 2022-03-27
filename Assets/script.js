@@ -2,7 +2,7 @@
 var APIKEY = '67ad538a4c7356a83bfb4f14c6e9b666';
 
 // For the API to work initially, the link needs to be updated to include "?#"
-window.location.href = 'https://csabbah.github.io/smart-weather-dashboard/?#';
+// window.location.href = 'https://csabbah.github.io/smart-weather-dashboard/?#';
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 

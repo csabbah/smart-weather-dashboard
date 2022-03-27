@@ -19,6 +19,13 @@ img {
   display: none;
 }
 
+@media (max-width: 556px) {
+  main {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 /* ---------- ---------- ---------- Header */
 
 header {
@@ -28,13 +35,23 @@ header {
   width: 1000px;
   height: 40px;
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 13px;
   background: linear-gradient(to right, #020024, #090979, #00d4ff);
-
   color: white;
   font-weight: 800;
 }
 
+@media (max-width: 1025px) {
+  header {
+    width: 542px;
+  }
+}
+
+@media (max-width: 556px) {
+  header {
+    width: 310px;
+  }
+}
 /* ---------- ---------- ---------- Form */
 
 form {
@@ -43,6 +60,7 @@ form {
 }
 
 #enter-city {
+  box-sizing: border-box;
   text-indent: 10px;
   margin-top: 6px;
   margin-bottom: 9px;
@@ -138,6 +156,48 @@ form hr {
   margin: 4px 0;
 }
 
+@media (max-width: 1025px) {
+  form {
+    width: 237px;
+  }
+}
+
+@media (max-width: 556px) {
+  #main-form {
+    margin-right: 0;
+  }
+
+  form {
+    width: 310px;
+  }
+
+  #history-searches {
+    display: flex;
+    justify-content: center;
+  }
+
+  #history-searches button {
+    margin: 5px 5px;
+    width: 145px;
+  }
+
+  .form-inner-container {
+    display: flex;
+  }
+
+  .form-inner-container button {
+    margin: 0 5px;
+  }
+  #clear-history {
+    margin-top: 0;
+  }
+
+  #reset,
+  #clear-history {
+    margin: 0 5px;
+    font-size: 13px;
+  }
+}
 /* ---------- ---------- ---------- Current weather - Main data section */
 #switch-metric {
   margin-top: 10px;
@@ -180,6 +240,27 @@ form hr {
   align-items: center;
 }
 
+@media (max-width: 1025px) {
+  #data {
+    width: 286px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #current-temp {
+    width: 270px;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 556px) {
+  #current-temp {
+    margin-top: 20px;
+    width: 298px;
+  }
+}
+
 /* ---------- ---------- ---------- Five day forecast - Main data section */
 
 #five-day-forecast {
@@ -213,4 +294,44 @@ form hr {
 .forecast-date {
   margin-bottom: 0;
   font-weight: 800;
+}
+
+@media (max-width: 1025px) {
+  #forecast-container {
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    left: -2px;
+  }
+
+  #five-day-forecast {
+    position: relative;
+    left: 2px;
+  }
+
+  .daily-forecast {
+    margin: 8px 8px;
+  }
+
+  .daily-forecast:nth-child(1),
+  .daily-forecast:nth-child(3) {
+    margin-left: 0;
+  }
+  .daily-forecast:nth-child(2),
+  .daily-forecast:nth-child(4) {
+    margin-right: 0;
+  }
+
+  .daily-forecast {
+    width: 123px;
+  }
+}
+@media (max-width: 556px) {
+  #forecast-container {
+    width: 316px;
+  }
+  .daily-forecast {
+    width: 135px;
+    padding: 7px 6px;
+  }
 }
