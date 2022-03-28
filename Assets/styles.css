@@ -173,6 +173,7 @@ form hr {
 
   #history-searches {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
   }
 
