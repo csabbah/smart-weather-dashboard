@@ -73,8 +73,6 @@ var extractedData = (weatherData, location) => {
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-var resetBtn = document.getElementById('reset');
-
 // Update DOM elements (textcontent) for the CURRENT DAY weather data
 var updateEl = (
   currentWeather,
@@ -188,11 +186,11 @@ var extractForecast = (weekData) => {
 };
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-
 // Upon clicking the reset button, the shortest function to clear everything would be to reload the application
 var resetData = () => {
   location.reload();
 };
+var resetBtn = document.getElementById('reset');
 resetBtn.addEventListener('click', resetData);
 
 // Upon clicking the clear history button, clear the storage and reload the application
