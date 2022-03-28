@@ -84,6 +84,7 @@ form {
   border: none;
   border-radius: 3px;
   color: white;
+  cursor: pointer;
   background-color: rgb(41, 202, 255);
   font-size: 15px;
   transition: 0.1s all ease-in-out;
@@ -107,6 +108,14 @@ form hr {
 
 #clear-history {
   display: none;
+}
+
+#submit,
+#reset,
+#switch-metric,
+#clear-history,
+#history-searches button {
+  user-select: none;
 }
 
 #reset {
